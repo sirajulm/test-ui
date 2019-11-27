@@ -1,0 +1,63 @@
+{
+  "name": "@medwing/components",
+  "version": "1.0.0",
+  "description": "UI Components library for Internal applications",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test && yarn run lint",
+    "preversion": "yarn run lint",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "build": "tsc",
+    "start": "styleguidist server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medwing/medwing-ui.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/medwing/medwing-ui/issues"
+  },
+  "homepage": "https://github.com/medwing/medwing-ui#readme",
+  "files": [
+    "lib/**/*",
+    "build/**/*"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "autoprefixer": "^9.7.1",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.6.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-nested": "^4.2.1",
+    "react": "^16.11.0",
+    "react-docgen-typescript": "^1.15.1",
+    "react-dom": "^16.11.0",
+    "react-styleguidist": "^10.2.0",
+    "rollup": "^1.26.5",
+    "rollup-plugin-postcss": "^2.0.3",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-typescript2": "^0.25.2",
+    "style-loader": "^1.0.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2"
+  },
+  "peerDependencies": {
+    "react": "^16.x",
+    "react-dom": "^16.x"
+  },
+  "dependencies": {}
+}
