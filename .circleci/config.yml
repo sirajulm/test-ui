@@ -1,38 +1,73 @@
-version: 2
-
 defaults: &defaults
-  working_directory: ~/test-ui
   docker:
     - image: circleci/node:12.13.1
+  working_directory: ~/test-ui
 
-jobs:
-  test:
-    <<: *defaults
+aliases:
+  - &save_dependencies
+    key: v1-dependencies-{{ checksum "yarn.lock" }}
+    paths:
+      - node_modules
+  - &restore_dependencies
+    keys:
+      - v1-dependencies-{{ checksum "yarn.lock" }}
+      - v1-dependencies-
+
+version: 2
+
+commands:
+  install_dependencies:
+    steps:
+      - restore_cache: *restore_dependencies
+      - run: |
+          if [ ! -d "node_modules" ] || [ $(git diff --name-only HEAD~1 HEAD | grep -c "yarn.lock") == 1 ]; then
+            sudo npm install -g yarn@latest
+            yarn install
+          fi
+      - save_cache: *save_dependencies
+
+  build_production:
     steps:
       - checkout
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - install_dependencies
+      - run: yarn build
       - persist_to_workspace:
-          root: ~/test-ui
-          paths: .
+          root: ~/medwing-admin
+          paths:
+            - build
+            - package.json
 
-  deploy:
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - run:
+          name: Build
+          command: echo "test"
+
+  deploy_production:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/test-ui
+      - build_production
       - run:
           name: Authenticate with registry
           command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
       - run:
           name: Publish package
-          command: npm publish
+          command: yarn publish
+      - store_artifacts:
+          path: ~/test-ui/lin
+          destination: production-dist
+
+workflows:
+  version: 2
+
+  deployment_production:
+    jobs:
+      - deploy_production:
+          filters:
+            branches:
+              only:
+                - master
