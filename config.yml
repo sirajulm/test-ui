@@ -35,19 +35,13 @@ jobs:
           command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
       - run:
           name: Publish package
-          command: npm publish
+          command: yarn publish
 
 workflows:
   version: 2
   test-deploy:
     jobs:
-      - test:
-          filters:
-            branches:
-              only: master
+      - test
       - deploy:
           requires:
             - test
-          filters:
-            branches:
-              only: master
