@@ -15,17 +15,6 @@ aliases:
 
 version: 2
 
-commands:
-  install_dependencies:
-    steps:
-      - restore_cache: *restore_dependencies
-      - run: |
-          if [ ! -d "node_modules" ] || [ $(git diff --name-only HEAD~1 HEAD | grep -c "yarn.lock") == 1 ]; then
-            sudo npm install -g yarn@latest
-            yarn install
-          fi
-      - save_cache: *save_dependencies
-
 jobs:
   build:
     <<: *defaults
@@ -40,7 +29,14 @@ jobs:
       - attach_workspace:
           at: ~/test-ui
       - checkout
-      - install_dependencies
+      - restore_cache: *restore_dependencies
+      - run: |
+          if [ ! -d "node_modules" ] || [ $(git diff --name-only HEAD~1 HEAD | grep -c "yarn.lock") == 1 ]; then
+            sudo npm install -g yarn@latest
+            yarn install
+          fi
+      - save_cache: *save_dependencies
+
       - run: yarn build
       - persist_to_workspace:
           root: ~/test-ui
