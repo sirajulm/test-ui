@@ -1,6 +1,6 @@
 {
   "name": "@sirajulm/components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "UI Components library for Internal applications",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
