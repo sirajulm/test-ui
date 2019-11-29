@@ -1,0 +1,53 @@
+version: 2
+
+defaults: &defaults
+  working_directory: ~/test-ui
+  docker:
+    - image: circleci/node:12.13.1
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: ~/test-ui
+          paths: .
+
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/test-ui
+      - run:
+          name: Authenticate with registry
+          command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
+      - run:
+          name: Publish package
+          command: npm publish
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
