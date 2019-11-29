@@ -26,17 +26,6 @@ commands:
           fi
       - save_cache: *save_dependencies
 
-  build_production:
-    steps:
-      - checkout
-      - install_dependencies
-      - run: yarn build
-      - persist_to_workspace:
-          root: ~/medwing-admin
-          paths:
-            - build
-            - package.json
-
 jobs:
   build:
     <<: *defaults
@@ -50,7 +39,14 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/test-ui
-      - build_production
+      - checkout
+      - install_dependencies
+      - run: yarn build
+      - persist_to_workspace:
+          root: ~/test-ui
+          paths:
+            - build
+            - package.json
       - run:
           name: Authenticate with registry
           command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
