@@ -66,8 +66,4 @@ workflows:
 
   deployment_production:
     jobs:
-      - deploy_production:
-          filters:
-            branches:
-              only:
-                - master
+      - deploy_production
