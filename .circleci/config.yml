@@ -38,13 +38,6 @@ commands:
             - package.json
 
 jobs:
-  build:
-    <<: *defaults
-    steps:
-      - run:
-          name: Build
-          command: echo "test"
-
   deploy_production:
     <<: *defaults
     steps:
