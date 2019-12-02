@@ -13,7 +13,7 @@ aliases:
       - v1-dependencies-{{ checksum "yarn.lock" }}
       - v1-dependencies-
 
-version: 2
+version: 2.1
 
 commands:
   install_dependencies:
@@ -55,7 +55,7 @@ jobs:
           destination: production-dist
 
 workflows:
-  version: 2
+  version: 2.1
 
   deployment_production:
     jobs:
