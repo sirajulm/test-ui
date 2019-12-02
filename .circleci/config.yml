@@ -26,7 +26,7 @@ commands:
           fi
       - save_cache: *save_dependencies
 
-  build_production:
+  build_production123:
     steps:
       - checkout
       - install_dependencies
@@ -43,7 +43,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/test-ui
-      - build_production
+      - build_production123
       - run:
           name: Authenticate with registry
           command: echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > ~/test-ui/.npmrc
